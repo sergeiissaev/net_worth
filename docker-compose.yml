@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+
+  finances:
+    image: finances
+    build: .
+    network_mode: "host"
+    env_file: .env
+    deploy:
+      restart_policy:
+        condition: on-failure

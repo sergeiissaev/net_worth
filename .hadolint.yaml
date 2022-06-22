@@ -1,0 +1,7 @@
+failure-threshold: warning
+ignored: []
+override:
+  error: []                       # list of rules
+  warning: []                     # list of rules
+  info: [DL3008, DL3002]                        # list of rules
+  style: []

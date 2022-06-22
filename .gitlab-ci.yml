@@ -1,0 +1,57 @@
+image: docker:19.03.12
+
+include:
+- template: Security/Secret-Detection.gitlab-ci.yml
+
+
+variables:
+  DOCKER_TLS_CERTDIR: "/certs"
+  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  GIT_SUBMODULE_STRATEGY: recursive
+  GIT_SUBMODULE_UPDATE_FLAGS: --jobs 4
+
+
+services:
+  - docker:19.03.12-dind
+
+before_script:
+  - docker info
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
+stages:
+  - build
+  - test
+  - deploy
+
+build_image:
+  stage: build
+  tags:
+    - "lambda"
+  script:
+    - docker build --pull -t $IMAGE_TAG .
+    - docker push $IMAGE_TAG
+
+unit_test:
+  stage: test
+  needs: [build_image]
+  tags:
+    - "lambda"
+  script:
+    - docker pull $IMAGE_TAG
+    - docker run --rm $IMAGE_TAG pytest --cov
+
+code_quality:
+  stage: test
+  needs: [build_image]
+  tags:
+    - "lambda"
+  script:
+    - docker run --rm $IMAGE_TAG black --check --line-length 120 .
+    - docker run --rm $IMAGE_TAG flake8 --max-line-length=120 .
+
+deploy:
+  stage: deploy
+  needs: [unit_test, code_quality]
+  script:
+    - echo "Example, this is to deploy to prod..."
+  when: manual

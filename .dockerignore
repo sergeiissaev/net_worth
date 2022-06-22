@@ -1,0 +1,152 @@
+*.o
+*.a
+*.dSYM
+*.csv
+*.out
+*.so
+*.exe
+*.dll
+*.lib
+*.dylib
+*.weights
+
+
+# OS Generated #
+.DS_Store*
+ehthumbs.db
+Icon?
+Thumbs.db
+*.swp
+
+# IDE generated #
+.vs/
+.vscode/
+
+# Managed by CMake
+src/version.h
+
+# Build artifacts
+lib/
+share/
+include/darknet/
+uselib
+uselib_track
+darknet
+*.conv*
+*.jpg
+
+
+# Byte-compiled / optimized / DLL files
+*__pycache__/
+*.py[cod]
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# DotEnv configuration
+.env
+
+# Database
+*.db
+*.rdb
+
+# Pycharm
+.idea
+
+# VS Code
+.vscode/
+
+# Spyder
+.spyproject/
+
+# Jupyter NB Checkpoints
+.ipynb_checkpoints/
+
+
+# Mac OS-specific storage files
+.DS_Store
+
+# vim
+*.swp
+*.swo
+
+# Mypy cache
+.mypy_cache/
+
+/secrets
+
+/src_models/checkpoints
+venv/
+*.zip
+.env
+
+*.pem
+
+*dask-worker-space*
+
+*catboost_info*
+*gluon_dir*
+
+data/external
+data/input
+data/interim
+data/processed
+data/raw
+data/data
+data
+
+out
+output
+
+models/checkpoints
