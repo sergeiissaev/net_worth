@@ -4,7 +4,8 @@ import logging
 
 
 def main():
-    NetWorth()
+    net = NetWorth()
+    net.find_net_worth()
 
 
 
