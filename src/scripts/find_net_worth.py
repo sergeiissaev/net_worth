@@ -1,6 +1,7 @@
-from finances.app.net_worth import NetWorth
+# -*- coding: utf-8 -*-
 import logging
 
+from finances.app.net_worth import NetWorth
 
 
 def main():
@@ -8,9 +9,6 @@ def main():
     net.find_net_worth()
 
 
-
-if __name__ == '__main__':
-    logging.basicConfig(
-        level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s:%(message)s"
-    )
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s:%(message)s")
     main()
