@@ -33,14 +33,27 @@ class NetWorth:
         coinbase = self._crypto_coinbase()
         coinbase_wallet = self._crypto_coinbase_wallet()
         ledger = self._crypto_ledger()
-        total = sum(
-            [binance, home, coinbase_wallet, coinbase, ledger, shakepay, twt, theta, vet, bitbuy, rrsp, td, tfsa]
+        money_dict = dict(
+            binance=binance,
+            home=home,
+            coinbase_wallet=coinbase_wallet,
+            coinbase=coinbase,
+            ledger=ledger,
+            shakepay=shakepay,
+            twt=twt,
+            theta=theta,
+            vet=vet,
+            bitbuy=bitbuy,
+            rrsp=rrsp,
+            td=td,
+            tfsa=tfsa,
         )
+        total = sum(money_dict.values())
         print(f"\n\nYour net worth is ${total:.2f}!")
         print("\n" * 10)
         for key, value in self.asset_dict.items():
-            print(f"{key:<10} {value[0]:<10.2f} {value[1]:<10}")
-        self._save_history(total=total)
+            print(f"{key:<10} {value[0]:<10.3f} {value[1]:<10}")
+        self._save_history(money_dict=money_dict)
 
     def _crypto_trust_wallet_token(self) -> float:
         return self._process_csv_live_values(csv_file=Path("data", "money", "crypto", "trust_wallet.csv"))
@@ -119,18 +132,57 @@ class NetWorth:
         print("*************************************************************************************************")
         return running_sum
 
-    def _save_history(self, total: int):
+    def _save_history(self, money_dict: dict) -> None:
+        """Save price history to csv and show plat"""
         date = datetime.today().strftime("%Y-%m-%d")
-        data = [[date, total]]
-        df = pd.read_csv(str(self.historical_net_worths))
-        if date != df.at[df.shape[0] - 1, "date"]:
-            df_new = pd.DataFrame(data, columns=["date", "net_worth"])
-            df = pd.concat([df, df_new])
-        else:
-            df.at[df.shape[0] - 1, "net_worth"] = total
+        net_worth = sum(money_dict.values())
+        data = [
+            [
+                date,
+                net_worth,
+                money_dict["binance"],
+                money_dict["home"],
+                money_dict["coinbase_wallet"],
+                money_dict["coinbase"],
+                money_dict["ledger"],
+                money_dict["shakepay"],
+                money_dict["twt"],
+                money_dict["theta"],
+            ]
+        ]
+        df = pd.read_csv(str(self.historical_net_worths), parse_dates=["date"])
+        df_new = pd.DataFrame(
+            data,
+            columns=[
+                "date",
+                "net_worth",
+                "binance",
+                "home",
+                "coinbase_wallet",
+                "coinbase",
+                "ledger",
+                "shakepay",
+                "twt",
+                "theta",
+            ],
+        )
+        if date == df.at[df.shape[0] - 1, "date"].strftime("%Y-%m-%d"):
+            # drop last row if last row was today
+            df = df[:-1]
+        df = pd.concat([df, df_new])
+        df = df.astype({"net_worth": "float", "binance": "float"})
         df.to_csv(str(self.historical_net_worths), index=False)
         logger.info("Saved net worth to history!")
         plt.plot(df.date, df.net_worth, "bx-", label="net worth")
+        plt.plot(df.date, df.binance, "rx-", label="binance")
+        plt.plot(df.date, df.home, "kx-", label="home")
+        plt.plot(df.date, df.coinbase_wallet, "gx-", label="coinbase_wallet")
+        plt.plot(df.date, df.coinbase, "yx-", label="coinbase")
+        plt.plot(df.date, df.ledger, "rx-", label="ledger")
+        plt.plot(df.date, df.shakepay, "mx-", label="shakepay")
+        plt.plot(df.date, df.twt, "yx-", label="twt")
+        plt.plot(df.date, df.theta, "rx-", label="theta")
+        plt.axhline(y=100000, color="y", linestyle="-")
         plt.title("Net Worth over time for Sergei Issaev")
         plt.xlabel("Date")
         plt.ylabel("Net Worth")
