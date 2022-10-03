@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import annotations
+
 import logging
 from collections import defaultdict
 from datetime import datetime
@@ -9,112 +11,65 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import yfinance as yf
 
+from finances.template import _Template
+
 logger = logging.getLogger(__name__)
 
 
-class NetWorth:
-    def __init__(self):
-        self.asset_dict = defaultdict(lambda: [0, 0])
-        self.historical_net_worths = Path("data", "net_worth_history", "net_worth_history.csv")
-        print("Welcome to your Net Worth Software. All prices are in CAD.")
+class NetWorth(_Template):
+    data_files_path: Path
+    historical_net_worths: Path
 
-    def find_net_worth(self):
+    def __init__(self, data_files_path: Path, historical_net_worths: Path):
+        self.historical_net_worths = historical_net_worths
+        self.data_files_path = data_files_path
+        self.asset_dict = defaultdict(lambda: [0, 0])
+        self.money_dict = {}
+        print("Welcome to your Net Worth Software. All prices are in CAD.")
+        self._find_net_worth()
+
+    def _find_net_worth(self):
         """Main method for calling all subcategories of net worth"""
-        tfsa = self._tfsa()
-        td = self._rrsp_td()
-        rrsp = self._rrsp_nb()
-        bitbuy = self._crypto_bitbuy()
-        vet = self._crypto_vechain()
-        theta = self._crypto_theta()
-        twt = self._crypto_trust_wallet_token()
-        shakepay = self._crypto_shakepay()
-        binance = self._crypto_binance()
-        home = self._home_cash()
-        coinbase = self._crypto_coinbase()
-        coinbase_wallet = self._crypto_coinbase_wallet()
-        ledger = self._crypto_ledger()
-        money_dict = dict(
-            binance=binance,
-            home=home,
-            coinbase_wallet=coinbase_wallet,
-            coinbase=coinbase,
-            ledger=ledger,
-            shakepay=shakepay,
-            twt=twt,
-            theta=theta,
-            vet=vet,
-            bitbuy=bitbuy,
-            rrsp=rrsp,
-            td=td,
-            tfsa=tfsa,
-        )
-        total = sum(money_dict.values())
+        for data_file in self.data_files_path.glob("**/*.csv"):
+            df = pd.read_csv(data_file)
+            file_type = int(df.type)
+            file_name = data_file.stem
+            if file_type == 1:
+                self._process_csv_live_values(df=df, file_name=file_name)
+            elif file_type == 2:
+                self._process_csv_static_values(df=df, file_name=file_name)
+            else:
+                err = ValueError(f"Invalid file type: {file_type=}")
+                logger.error(err)
+                raise err
+        total = sum(self.money_dict.values())
         print(f"\n\nYour net worth is ${total:.2f}!")
         print("\n" * 10)
         for key, value in self.asset_dict.items():
             print(f"{key:<10} {value[0]:<10.3f} {value[1]:<10}")
-        self._save_history(money_dict=money_dict)
+        self._save_history(money_dict=self.money_dict)
 
-    def _crypto_trust_wallet_token(self) -> float:
-        return self._process_csv_live_values(csv_file=Path("data", "money", "crypto", "trust_wallet.csv"))
-
-    def _crypto_ledger(self) -> float:
-        return self._process_csv_live_values(csv_file=Path("data", "money", "crypto", "ledger.csv"))
-
-    def _crypto_coinbase(self) -> float:
-        return self._process_csv_live_values(csv_file=Path("data", "money", "crypto", "coinbase.csv"))
-
-    def _home_cash(self) -> float:
-        return self._process_csv_static_values(csv_file=Path("data", "money", "home", "cash.csv"))
-
-    def _rrsp_nb(self) -> float:
-        return self._process_csv_static_values(csv_file=Path("data", "money", "home", "rrsp_nb.csv"))
-
-    def _rrsp_td(self) -> float:
-        return self._process_csv_static_values(csv_file=Path("data", "money", "home", "rrsp_td.csv"))
-
-    def _tfsa(self):
-        return self._process_csv_live_values(csv_file=Path("data", "money", "home", "tfsa.csv"))
-
-    def _crypto_coinbase_wallet(self):
-        return self._process_csv_live_values(csv_file=Path("data", "money", "crypto", "coinbase_wallet.csv"))
-
-    def _crypto_binance(self):
-        return self._process_csv_live_values(csv_file=Path("data", "money", "crypto", "binance.csv"))
-
-    def _crypto_shakepay(self):
-        return self._process_csv_live_values(csv_file=Path("data", "money", "crypto", "shakepay.csv"))
-
-    def _crypto_theta(self):
-        return self._process_csv_live_values(csv_file=Path("data", "money", "crypto", "theta_wallet.csv"))
-
-    def _crypto_vechain(self):
-        return self._process_csv_live_values(csv_file=Path("data", "money", "crypto", "vechain.csv"))
-
-    def _crypto_bitbuy(self):
-        return self._process_csv_live_values(csv_file=Path("data", "money", "crypto", "bitbuy.csv"))
-
-    def _process_csv_static_values(self, csv_file: Path) -> float:
+    def _process_csv_static_values(self, df: pd.DataFrame, file_name: str) -> float:
         """Multiply amount of asset by value"""
         print("*************************************************************************************************")
-        df = pd.read_csv(csv_file)
         running_sum = 0
-        for col in range(df.shape[1]):
+        for col in range(1, df.shape[1]):
             column = df.columns.to_list()[col]
             amount = df.iloc[0][column]
             running_sum += amount
             print(f"{'Current':<10} {column:<10} {'holding=$':<9}{amount:<50}")
+            self.asset_dict[column][0] += amount
         running_sum = round(running_sum, 2)
-        print(f"The total sum for {csv_file.stem} is ${running_sum}")
+        self.money_dict[file_name] = running_sum
+        print(f"The total sum for {file_name} is ${running_sum}")
         print("*************************************************************************************************")
         return running_sum
 
-    def _process_csv_live_values(self, csv_file: Path) -> float:
+    def _process_csv_live_values(self, df: pd.DataFrame, file_name: str) -> float:
         """Multiply amount of asset by value"""
         print("*************************************************************************************************")
-        df = pd.read_csv(csv_file)
         running_sum = 0
-        for col in range(df.shape[1]):
+        for col in range(1, df.shape[1]):
             column = df.columns.to_list()[col]
             ticker = self._get_price_yfinance(column=column)
             price = ticker.info["regularMarketPrice"]
@@ -128,7 +83,8 @@ class NetWorth:
             self.asset_dict[column][0] += amount
             self.asset_dict[column][1] += value
         running_sum = round(running_sum, 2)
-        print(f"The total sum for {csv_file.stem} is ${running_sum}")
+        self.money_dict[file_name] = running_sum
+        print(f"The total sum for {file_name} is ${running_sum}")
         print("*************************************************************************************************")
         return running_sum
 
@@ -148,6 +104,11 @@ class NetWorth:
                 money_dict["shakepay"],
                 money_dict["twt"],
                 money_dict["theta"],
+                money_dict["vet"],
+                money_dict["bitbuy"],
+                money_dict["rrsp"],
+                money_dict["td"],
+                money_dict["tfsa"],
             ]
         ]
         df = pd.read_csv(str(self.historical_net_worths), parse_dates=["date"])
@@ -164,6 +125,11 @@ class NetWorth:
                 "shakepay",
                 "twt",
                 "theta",
+                "vet",
+                "bitbuy",
+                "rrsp",
+                "td",
+                "tfsa",
             ],
         )
         if date == df.at[df.shape[0] - 1, "date"].strftime("%Y-%m-%d"):
@@ -182,11 +148,21 @@ class NetWorth:
         plt.plot(df.date, df.shakepay, "mx-", label="shakepay")
         plt.plot(df.date, df.twt, "yx-", label="twt")
         plt.plot(df.date, df.theta, "rx-", label="theta")
+        plt.plot(df.date, df.vet, "yx-", label="vet")
+        plt.plot(df.date, df.bitbuy, "gx-", label="bitbuy")
+        plt.plot(df.date, df.rrsp, "yx-", label="rrsp")
+        plt.plot(df.date, df.td, "yx-", label="td")
+        plt.plot(df.date, df.tfsa, "rx-", label="tfsa")
         plt.axhline(y=100000, color="y", linestyle="-")
         plt.title("Net Worth over time for Sergei Issaev")
         plt.xlabel("Date")
         plt.ylabel("Net Worth")
-        plt.legend()
+        plt.legend(prop={"size": 6})
+        plt.show()
+        fig, ax = plt.subplots()
+        ax.stackplot(df.date, df.iloc[:, 2:].T, labels=list(df.iloc[:, 2:].columns))
+        ax.plot(df.date, df.net_worth, label="net_worth")
+        ax.legend(loc="lower left")
         plt.show()
 
     @staticmethod
