@@ -7,6 +7,7 @@ from datetime import datetime
 from functools import lru_cache
 from pathlib import Path
 
+import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import pandas as pd
 import yfinance as yf
@@ -26,9 +27,8 @@ class NetWorth(_Template):
         self.asset_dict = defaultdict(lambda: [0, 0])
         self.money_dict = {}
         print("Welcome to your Net Worth Software. All prices are in CAD.")
-        self._find_net_worth()
 
-    def _find_net_worth(self):
+    def find_net_worth(self):
         """Main method for calling all subcategories of net worth"""
         for data_file in self.data_files_path.glob("**/*.csv"):
             df = pd.read_csv(data_file)
@@ -42,12 +42,15 @@ class NetWorth(_Template):
                 err = ValueError(f"Invalid file type: {file_type=}")
                 logger.error(err)
                 raise err
-        total = sum(self.money_dict.values())
-        print(f"\n\nYour net worth is ${total:.2f}!")
-        print("\n" * 10)
+        self._report_total_holdings()
+
+    def _report_total_holdings(self) -> None:
+        print("\n" * 3)
+        print("Combined holdings for each asset")
         for key, value in self.asset_dict.items():
             print(f"{key:<10} {value[0]:<10.3f} {value[1]:<10}")
-        self._save_history(money_dict=self.money_dict)
+        total = sum(self.money_dict.values())
+        print(f"\n\nYour net worth is ${total:.2f}!")
 
     def _process_csv_static_values(self, df: pd.DataFrame, file_name: str) -> float:
         """Multiply amount of asset by value"""
@@ -59,10 +62,7 @@ class NetWorth(_Template):
             running_sum += amount
             print(f"{'Current':<10} {column:<10} {'holding=$':<9}{amount:<50}")
             self.asset_dict[column][0] += amount
-        running_sum = round(running_sum, 2)
-        self.money_dict[file_name] = running_sum
-        print(f"The total sum for {file_name} is ${running_sum}")
-        print("*************************************************************************************************")
+        self._print_running_sum(file_name=file_name, running_sum=running_sum)
         return running_sum
 
     def _process_csv_live_values(self, df: pd.DataFrame, file_name: str) -> float:
@@ -82,87 +82,65 @@ class NetWorth(_Template):
             print(f"{'Current':<10} {column:<10} {'holding=$':<9}{value:<50} {amount:<20} {price:<20}")
             self.asset_dict[column][0] += amount
             self.asset_dict[column][1] += value
+        self._print_running_sum(file_name=file_name, running_sum=running_sum)
+        return running_sum
+
+    def _print_running_sum(self, file_name: str, running_sum: float) -> None:
         running_sum = round(running_sum, 2)
         self.money_dict[file_name] = running_sum
         print(f"The total sum for {file_name} is ${running_sum}")
         print("*************************************************************************************************")
-        return running_sum
 
-    def _save_history(self, money_dict: dict) -> None:
+    def save_history(self) -> pd.DataFrame:
         """Save price history to csv and show plat"""
         date = datetime.today().strftime("%Y-%m-%d")
-        net_worth = sum(money_dict.values())
-        data = [
-            [
-                date,
-                net_worth,
-                money_dict["binance"],
-                money_dict["home"],
-                money_dict["coinbase_wallet"],
-                money_dict["coinbase"],
-                money_dict["ledger"],
-                money_dict["shakepay"],
-                money_dict["twt"],
-                money_dict["theta"],
-                money_dict["vet"],
-                money_dict["bitbuy"],
-                money_dict["rrsp"],
-                money_dict["td"],
-                money_dict["tfsa"],
-            ]
-        ]
+        net_worth = sum(self.money_dict.values())
+        self.money_dict["date"] = date
+        self.money_dict["net_worth"] = net_worth
         df = pd.read_csv(str(self.historical_net_worths), parse_dates=["date"])
-        df_new = pd.DataFrame(
-            data,
-            columns=[
-                "date",
-                "net_worth",
-                "binance",
-                "home",
-                "coinbase_wallet",
-                "coinbase",
-                "ledger",
-                "shakepay",
-                "twt",
-                "theta",
-                "vet",
-                "bitbuy",
-                "rrsp",
-                "td",
-                "tfsa",
-            ],
-        )
+        df_new = pd.DataFrame.from_dict(self.money_dict, orient="index").T
+        df_new.date = pd.to_datetime(df_new.date)
         if date == df.at[df.shape[0] - 1, "date"].strftime("%Y-%m-%d"):
             # drop last row if last row was today
             df = df[:-1]
         df = pd.concat([df, df_new])
-        df = df.astype({"net_worth": "float", "binance": "float"})
+        for col in df.columns[1:]:
+            df[col] = pd.to_numeric(df[col], errors="coerce")
         df.to_csv(str(self.historical_net_worths), index=False)
         logger.info("Saved net worth to history!")
-        plt.plot(df.date, df.net_worth, "bx-", label="net worth")
-        plt.plot(df.date, df.binance, "rx-", label="binance")
-        plt.plot(df.date, df.home, "kx-", label="home")
-        plt.plot(df.date, df.coinbase_wallet, "gx-", label="coinbase_wallet")
-        plt.plot(df.date, df.coinbase, "yx-", label="coinbase")
-        plt.plot(df.date, df.ledger, "rx-", label="ledger")
-        plt.plot(df.date, df.shakepay, "mx-", label="shakepay")
-        plt.plot(df.date, df.twt, "yx-", label="twt")
-        plt.plot(df.date, df.theta, "rx-", label="theta")
-        plt.plot(df.date, df.vet, "yx-", label="vet")
-        plt.plot(df.date, df.bitbuy, "gx-", label="bitbuy")
-        plt.plot(df.date, df.rrsp, "yx-", label="rrsp")
-        plt.plot(df.date, df.td, "yx-", label="td")
-        plt.plot(df.date, df.tfsa, "rx-", label="tfsa")
+        return df
+
+    def create_plots(self, df: pd.DataFrame) -> None:
+        """Create plots of net worth"""
+        self._create_line_plot(df=df)
+        self._create_stacked_plot(df=df)
+
+    def _create_line_plot(self, df: pd.DataFrame) -> None:
+        """Create line plot of net worth"""
+        for col in df.columns[1:]:  # skip date
+            plt.plot(df.date, df[col], label=col)
         plt.axhline(y=100000, color="y", linestyle="-")
-        plt.title("Net Worth over time for Sergei Issaev")
+        plt.title("Net Worth over time")
         plt.xlabel("Date")
+        plt.xticks(rotation=30)
+        plt.gca().xaxis.set_minor_locator(mdates.MonthLocator(bymonth=[4, 7, 10]))
         plt.ylabel("Net Worth")
         plt.legend(prop={"size": 6})
+        plt.tight_layout()
+        plt.savefig(Path("data", "processed", "net_worth_line_graph.png"))
         plt.show()
+
+    def _create_stacked_plot(self, df: pd.DataFrame) -> None:
+        """Create stacked plot of net worth"""
         fig, ax = plt.subplots()
-        ax.stackplot(df.date, df.iloc[:, 2:].T, labels=list(df.iloc[:, 2:].columns))
+        ax.stackplot(df.date, df.iloc[:, 2:].T, labels=list(df.iloc[:, 2:].columns))  # skip date and net worth
         ax.plot(df.date, df.net_worth, label="net_worth")
         ax.legend(loc="lower left")
+        ax.set_xlabel("Date")
+        ax.set_ylabel("Net Worth")
+        fig.autofmt_xdate()
+        plt.tight_layout()
+        plt.savefig(Path("data", "processed", "net_worth_stacked_graph.png"))
         plt.show()
 
     @staticmethod
