@@ -1,4 +1,0 @@
-finances~=0.1.0
-pandas==1.4.3
-setuptools~=62.5.0
-yfinance~=0.1.72
