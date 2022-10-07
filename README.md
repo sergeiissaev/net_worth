@@ -34,9 +34,9 @@
 <h3 align="center">Net Worth Calculation and Tracking Tool</h3>
 
   <p align="center">
-    project_description
+    A free, open source tool to track your live net worth by multiplying your assets by their respective market values.
     <br />
-    <a href="https://github.com/github_username/repo_name"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/sergeiissaev/net_worth"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/github_username/repo_name">View Demo</a>
