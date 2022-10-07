@@ -36,9 +36,6 @@
   <p align="center">
     A free, open source tool to track your live net worth by multiplying your assets by their respective market values.
     <br />
-    <a href="https://github.com/sergeiissaev/net_worth"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
     <a href="https://github.com/sergeiissaev/net_worth">View Demo</a>
     ·
     <a href="https://github.com/sergeiissaev/net_worth/issues">Report Bug</a>
@@ -122,7 +119,7 @@ This is an example of how to list things you need to use the software and how to
 1. Get a free API Key at [https://example.com](https://example.com)
 2. Clone the repo
    ```sh
-   git clone https://github.com/github_username/repo_name.git
+   git clone https://github.com/sergeiissaev/repo_name.git
    ```
 3. Install NPM packages a
    ```sh
@@ -156,7 +153,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 - [ ] Feature 3
     - [ ] Nested Feature
 
-See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/sergeiissaev/repo_name/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -194,7 +191,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
 
-Project Link: [https://github.com/github_username/repo_name](https://github.com/github_username/repo_name)
+Project Link: [https://github.com/sergeiissaev/repo_name](https://github.com/sergeiissaev/repo_name)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
