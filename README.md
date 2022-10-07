@@ -183,7 +183,7 @@ Project Link: [https://github.com/sergeiissaev/net_worth](https://github.com/ser
 [stars-url]: https://github.com/sergeiissaev/net_worth/stargazers
 [issues-shield]: https://img.shields.io/github/issues/sergeiissaev/net_worth.svg?style=for-the-badge
 [issues-url]: https://github.com/sergeiissaev/net_worth/issues
-[license-shield]: https://img.shields.io/github/license/sergeiissaev/net_worth.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
 [license-url]: https://github.com/sergeiissaev/net_worth/blob/master/LICENSE.md
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/sergei-issaev
