@@ -52,23 +52,17 @@
   <ol>
     <li>
       <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
     </li>
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
 
@@ -79,7 +73,8 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`
+A free, open-source tool to track your net worth at any moment and across time. Instead of logging in and checking numerous brokerages,
+exchanges, etc. you can track and visualize your complete net worth at any moment.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -89,31 +84,21 @@ Here's a blank template to get started: To avoid retyping too much info. Do a se
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
 To get a local copy up and running follow these simple example steps.
 
-### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
 
 ### Installation
 
-1. Get a free API Key at [https://example.com](https://example.com)
+1. Install Anaconda from  [https://www.anaconda.com/products/distribution](https://www.anaconda.com/products/distribution) if you do not have a Python installed already.
 2. Clone the repo
    ```sh
    git clone https://github.com/sergeiissaev/net_worth.git
    ```
-3. Install NPM packages a
-   ```sh
-   npm install
+3. Navigate to the project root using a shell (terminal on Mac or command prompt on Windows). Create a virtual environment using
+   ```conda env create --name net_worth --file envs/environment.yml```
    ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
+4. Activate your environment with
+   ```conda activate net_worth```
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
