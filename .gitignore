@@ -117,6 +117,12 @@ mlruns/
 /models/
 metrics/
 metrics_trt/
-/data
+/data/external
+/data/interim
+/data/money_1
+/data/net_worth_history
+/data/net_worth_history_1
+/data/processed
+/data/taxes
 
 .idea

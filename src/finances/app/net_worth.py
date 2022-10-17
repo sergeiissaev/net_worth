@@ -97,13 +97,23 @@ class NetWorth(_Template):
         net_worth = sum(self.money_dict.values())
         self.money_dict["date"] = date
         self.money_dict["net_worth"] = net_worth
-        df = pd.read_csv(str(self.historical_net_worths), parse_dates=["date"])
         df_new = pd.DataFrame.from_dict(self.money_dict, orient="index").T
         df_new.date = pd.to_datetime(df_new.date)
-        if date == df.at[df.shape[0] - 1, "date"].strftime("%Y-%m-%d"):
-            # drop last row if last row was today
-            df = df[:-1]
-        df = pd.concat([df, df_new])
+        # If an existing net worth file is not found
+        if not self.historical_net_worths.is_file():
+            # If the entire folder is missing
+            if not self.historical_net_worths.parent.is_dir():
+                self.historical_net_worths.parent.mkdir(parents=True)
+            # Ensure first two columns are date and net_worth
+            df_new.insert(0, "net_worth", df_new.pop("net_worth"))
+            df_new.insert(0, "date", df_new.pop("date"))
+            df = df_new
+        else:
+            df = pd.read_csv(str(self.historical_net_worths), parse_dates=["date"])
+            if date == df.at[df.shape[0] - 1, "date"].strftime("%Y-%m-%d"):
+                # drop last row if last row was today
+                df = df[:-1]
+            df = pd.concat([df, df_new])
         for col in df.columns[1:]:
             df[col] = pd.to_numeric(df[col], errors="coerce")
         df.to_csv(str(self.historical_net_worths), index=False)
@@ -119,7 +129,7 @@ class NetWorth(_Template):
         """Create line plot of net worth"""
         for col in df.columns[1:]:  # skip date
             plt.plot(df.date, df[col], label=col)
-        plt.axhline(y=100000, color="y", linestyle="-")
+        # plt.axhline(y=100000, color="y", linestyle="-")
         plt.title("Net Worth over time")
         plt.xlabel("Date")
         plt.xticks(rotation=30)
