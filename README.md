@@ -31,13 +31,11 @@
 <br />
 <div align="center">
 
-<h3 align="center">Net Worth Calculation and Tracking Tool</h3>
+<h3 align="center">Net Worth Calculator and Tracking Tool</h3>
 
   <p align="center">
     A free, open source tool to track your live net worth by multiplying your assets by their respective market values.
     <br />
-    <a href="https://github.com/sergeiissaev/net_worth">View Demo</a>
-    ·
     <a href="https://github.com/sergeiissaev/net_worth/issues">Report Bug</a>
     ·
     <a href="https://github.com/sergeiissaev/net_worth/issues">Request Feature</a>

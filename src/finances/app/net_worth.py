@@ -129,7 +129,7 @@ class NetWorth(_Template):
         """Create line plot of net worth"""
         for col in df.columns[1:]:  # skip date
             plt.plot(df.date, df[col], label=col)
-        # plt.axhline(y=100000, color="y", linestyle="-")
+        plt.axhline(y=100000, color="y", linestyle="-")
         plt.title("Net Worth over time")
         plt.xlabel("Date")
         plt.xticks(rotation=30)
