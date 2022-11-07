@@ -93,10 +93,12 @@ To get a copy of the tool follow these steps.
    git clone https://github.com/sergeiissaev/net_worth.git
    ```
 3. Navigate to the project root using a shell (terminal on Mac or command prompt on Windows). Create a virtual environment using
-   ```conda env create --name net_worth --file envs/environment.yml```
+   ```sh
+   conda env create --name net_worth --file envs/environment.yml```
    ```
 4. Activate your environment with
-   ```conda activate net_worth```
+   ```sh
+   conda activate net_worth
    ```
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
