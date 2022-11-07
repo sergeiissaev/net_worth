@@ -94,7 +94,7 @@ To get a copy of the tool follow these steps.
    ```
 3. Navigate to the project root using a shell (terminal on Mac or command prompt on Windows). Create a virtual environment using
    ```sh
-   conda env create --name net_worth --file envs/environment.yml```
+   conda env create --name net_worth --file envs/environment.yml
    ```
 4. Activate your environment with
    ```sh
@@ -107,20 +107,29 @@ To get a copy of the tool follow these steps.
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-To run the software, navigate to the root directory and run the following command:
+After you have navigated to the root directory, run the following command:
 
-```python src/scripts/find_net_worth.py```
+```sh
+python src/scripts/find_net_worth.py
+```
 
-The asset data is read from the data/money folder. For demonstration purposes, there are two .csv files to start. The first is
-data/money/tfsa.csv, which contains 1000 shares of MSFT stock. The second is data/money/cash_at_home.csv, which contains $1000 in cash.
-When you run the program initially, these data files will be used.
+The asset data is read from the ```data/money``` folder. For demonstration purposes, there are three .csv files to start.
+1. ```data/money/tfsa.csv```, which contains 10 shares of MSFT stock, 10 shares of AAPL, and 100 shares of XIU.TO.
 
-If you open these files, you will notice the first column contains a column name "type". This is used to determine whether to multiply
+
+2. ```data/money/chequing_account.csv```, which contains $2000 in cash.
+
+
+3. ```data/money/rrsp.csv```, which contains 10 shares of GSY stock, 10 shares of HXQ.TO, and 100 shares of BRK-B.
+When you run the program initially, these data files will be used to calculate a net worth.
+
+If you open those files, you will notice the first column contains a column name "type". This is used to determine whether to multiply
 this asset by its live price, or whether the price is static:
 
-Type 1 = live values. These numbers will be multiplied by the live price using the Yahoo Finance API. Examples include stocks, crypto, etc.
+* Type 1 = live values. These numbers will be multiplied by the live price using the Yahoo Finance API. Examples include stocks, crypto, etc.
 
-Type 2 = static value. These numbers are constants and will not be multiplied by the live price. Examples include cash, car value, collectibles, etc.
+
+* Type 2 = static value. These numbers are constants and will not be multiplied by the live price. Examples include cash, car value, collectibles, etc.
 
 Once you are ready to add your own assets, delete these data files, along with the file at data/net_worth_history/net_worth_history.csv.
 
