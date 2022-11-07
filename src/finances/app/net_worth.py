@@ -146,6 +146,7 @@ class NetWorth(_Template):
         ax.stackplot(df.date, df.iloc[:, 2:].T, labels=list(df.iloc[:, 2:].columns))  # skip date and net worth
         ax.plot(df.date, df.net_worth, label="net_worth")
         ax.legend(loc="lower left")
+        ax.set_title("Net Worth Stacked Plot")
         ax.set_xlabel("Date")
         ax.set_ylabel("Net Worth")
         fig.autofmt_xdate()
