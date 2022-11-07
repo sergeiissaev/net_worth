@@ -119,7 +119,6 @@ metrics/
 metrics_trt/
 data/external
 data/interim
-data/processed
 data/raw
 data/money_1
 data/net_worth_history
