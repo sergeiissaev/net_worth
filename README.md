@@ -71,8 +71,8 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-A free, open-source tool to track your net worth at any moment and across time. Rather than signing in and checking numerous brokerages,
-exchanges, etc. you can easily and reliably track and visualize your complete net worth at any moment.
+A free, open-source tool to track your net worth at any moment and across time. No more signing in separately and checking various brokerages,
+exchanges, etc. Now, you can easily and reliably track and visualize your complete net worth at any moment.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -82,7 +82,7 @@ exchanges, etc. you can easily and reliably track and visualize your complete ne
 <!-- GETTING STARTED -->
 ## Getting Started
 
-To get a local copy up and running follow these simple example steps.
+To get a copy of the tool follow these steps.
 
 
 ### Installation
@@ -98,7 +98,6 @@ To get a local copy up and running follow these simple example steps.
 4. Activate your environment with
    ```conda activate net_worth```
    ```
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
