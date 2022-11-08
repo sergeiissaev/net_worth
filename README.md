@@ -131,11 +131,13 @@ this asset by its live price, or whether the price is static:
 
 * Type 2 = static value. These numbers are constants and will not be multiplied by the live price. Examples include cash, car value, collectibles, etc.
 
-Once you are ready to add your own assets, delete these data files, along with the file at data/net_worth_history/net_worth_history.csv.
+Once you are ready to add your own assets, delete these data files, along with the file at ```data/net_worth_history/net_worth_history.csv``` (this file will only be there if you ran the code).
 
-To create your own assets, create a new .csv file in the data/money folder. The name of the file will be used as the name of the asset for graphing purposes.
+To input your own assets, create a new .csv file in the ```data/money``` folder. The name of the file will be used as the name of the asset for graphing purposes.
+
 There should be two rows in each .csv file. The first row should contain the column names, and the second should contain the values.
-The first column should be "type" (with a value of 1 or 2, as explained above), and the columns to the right should have a column name of the asset. If this file is type 1, the name should be the ticker for that asset as it appears on Yahoo Finance[https://ca.finance.yahoo.com/].
+
+The first column should be "type" (with a value of 1 or 2, as explained above), and the columns to the right should have a column name of the asset. If this file is type 1, the name should be the ticker for that asset as it appears on [Yahoo Finance](https://ca.finance.yahoo.com/).
 If the asset is of type 2, the name does not matter, other than that it will appear in the report with that name. The value column should contain the number of shares (or crypto coins) for type 1, or the cash value of the asset for type 2.
 
 
