@@ -92,9 +92,10 @@ To get a copy of the tool follow these steps.
    ```sh
    git clone https://github.com/sergeiissaev/net_worth.git
    ```
-3. Navigate to the project root using a shell (terminal on Mac or command prompt on Windows). Create a virtual environment using
+3. Navigate inside the project root using a shell (terminal on Mac or command prompt on Windows). Create a virtual environment using
    ```sh
-   conda env create --name net_worth --file envs/environment.yml
+   cd net_worth
+   conda env create --name net_worth --file env/environment.yml
    ```
 4. Activate your environment with
    ```sh
