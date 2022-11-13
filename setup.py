@@ -3,8 +3,9 @@ from setuptools import find_packages, setup
 
 setup(
     name="finances",
-    packages=find_packages(),
-    version="1.1.0",
+    package_dir={"": "src"},
+    packages=find_packages(where="src"),
+    version="0.1.0",
     description="Net worth calculation package",
     author="Sergei Issaev",
 )
