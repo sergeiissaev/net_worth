@@ -23,6 +23,7 @@ var/
 .installed.cfg
 *.egg
 
+
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
@@ -126,6 +127,6 @@ data/net_worth_history_1
 data/taxes
 data/processed
 
-
+src/finances/app/net_worth_config.py
 
 .idea
