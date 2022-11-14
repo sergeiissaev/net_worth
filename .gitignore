@@ -127,6 +127,6 @@ data/net_worth_history_1
 data/taxes
 data/processed
 
-src/finances/app/net_worth_config.py
+
 
 .idea
