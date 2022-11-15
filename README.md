@@ -114,6 +114,8 @@ After you have navigated to the root directory, run the following command:
 python src/scripts/find_net_worth.py
 ```
 
+Note that the first day you run the software, the graphs will be blank, since at least 2 day's worth of datapoints are needed to create a line graph.
+
 The asset data is read from the ```data/money``` folder. For demonstration purposes, there are three .csv files to start.
 1. ```data/money/tfsa.csv```, which contains 10 shares of MSFT stock, 10 shares of AAPL, and 100 shares of XIU.TO.
 
