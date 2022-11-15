@@ -47,7 +47,7 @@ class NetWorth(_Template):
     def _report_total_holdings(self) -> None:
         print("\n" * 3)
         print("Combined holdings for each asset")
-        for key, value in self.asset_dict.items():
+        for key, value in sorted(self.asset_dict.items(), key=lambda x: x[1][1]):
             print(f"{key:<10} {value[0]:<10.3f} {value[1]:<10}")
         total = sum(self.money_dict.values())
         print(f"\n\nYour net worth is ${total:.2f}!")
@@ -62,6 +62,7 @@ class NetWorth(_Template):
             running_sum += amount
             print(f"{'Current':<10} {column:<10} {'holding=$':<9}{amount:<50}")
             self.asset_dict[column][0] += amount
+            self.asset_dict[column][1] += amount
         self._print_running_sum(file_name=file_name, running_sum=running_sum)
         return running_sum
 
@@ -80,8 +81,8 @@ class NetWorth(_Template):
             value = round(amount * price, 2)
             running_sum += value
             print(f"{'Current':<10} {column:<10} {'holding=$':<9}{value:<50} {amount:<20} {price:<20}")
-            self.asset_dict[column][0] += amount
-            self.asset_dict[column][1] += value
+            self.asset_dict[column][0] += amount  # of asset
+            self.asset_dict[column][1] += value  # in fiat
         self._print_running_sum(file_name=file_name, running_sum=running_sum)
         return running_sum
 
@@ -129,7 +130,6 @@ class NetWorth(_Template):
         """Create line plot of net worth"""
         for col in df.columns[1:]:  # skip date
             plt.plot(df.date, df[col], label=col)
-        plt.axhline(y=100000, color="y", linestyle="-")
         plt.title("Net Worth over time")
         plt.xlabel("Date")
         plt.xticks(rotation=30)
