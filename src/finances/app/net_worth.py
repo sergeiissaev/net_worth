@@ -46,7 +46,9 @@ class NetWorth(_Template):
 
     def _report_total_holdings(self) -> None:
         print("\n" * 3)
-        print("Combined holdings for each asset")
+        print("Combined holdings for each asset (sorted)")
+        print("________________________________________________________")
+        print()
         for key, value in sorted(self.asset_dict.items(), key=lambda x: x[1][1]):
             print(f"{key:<10} {value[0]:<10.3f} {value[1]:<10}")
         total = sum(self.money_dict.values())
@@ -80,7 +82,9 @@ class NetWorth(_Template):
             amount = df.iloc[0][column]
             value = round(amount * price, 2)
             running_sum += value
-            print(f"{'Current':<10} {column:<10} {'holding=$':<9}{value:<50} {amount:<20} {price:<20}")
+            print(
+                f"{'Current':<10} {column:<10} {'holding=$':<9}{value:<50} {amount:<8.2f} {'units':<10} {price:<10.2f} {'$/unit':<10}"
+            )
             self.asset_dict[column][0] += amount  # of asset
             self.asset_dict[column][1] += value  # in fiat
         self._print_running_sum(file_name=file_name, running_sum=running_sum)
