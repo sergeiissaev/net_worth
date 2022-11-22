@@ -71,11 +71,11 @@
 
 
 
-![Product Name Screen Shot][product-screenshot2]
+![Product Name Screen Shot][product-screenshot]
 
 ![Product Name Screen Shot][product-screenshot3]
 
-![Product Name Screen Shot][product-screenshot]
+
 
 A free, open-source tool to track your net worth at any moment and across time. No more signing in separately and checking various brokerages,
 exchanges, etc. Now, you can easily and reliably track and visualize your complete net worth at any moment.
