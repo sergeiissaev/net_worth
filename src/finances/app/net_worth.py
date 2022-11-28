@@ -50,7 +50,7 @@ class NetWorth(_Template):
         print("________________________________________________________")
         print()
         for key, value in sorted(self.asset_dict.items(), key=lambda x: x[1][1]):
-            print(f"{key:<10} {value[0]:<10.3f} {value[1]:<10}")
+            print(f"{key:<10} {value[0]:<10.3f} units      ${value[1]:<10.2f}")
         total = sum(self.money_dict.values())
         print(f"\n\nYour net worth is ${total:.2f}!")
 
@@ -75,7 +75,14 @@ class NetWorth(_Template):
         for col in range(1, df.shape[1]):
             column = df.columns.to_list()[col]
             ticker = self._get_price_yfinance(column=column)
-            price = ticker.info["regularMarketPrice"]
+            try:
+                price = ticker.info["regularMarketPrice"]
+            except TimeoutError:
+                price = ticker.info["regularMarketPrice"]
+            except Exception as e:
+                err = ValueError(f"Failed to retrieve live price for {ticker}")
+                logger.error(err)
+                raise err from e
             if not price:
                 logger.warning(f"Failed to find price for {column}.")
                 price = 0
@@ -137,6 +144,7 @@ class NetWorth(_Template):
         plt.title("Net Worth over time")
         plt.xlabel("Date")
         plt.xticks(rotation=30)
+        plt.axhline(y=100000, color="y")
         plt.gca().xaxis.set_minor_locator(mdates.MonthLocator(bymonth=[4, 7, 10]))
         plt.ylabel("Net Worth")
         plt.legend(prop={"size": 6})
