@@ -144,7 +144,7 @@ class NetWorth(_Template):
         plt.title("Net Worth over time")
         plt.xlabel("Date")
         plt.xticks(rotation=30)
-        plt.axhline(y=100000, color="y")
+        # plt.axhline(y=100000, color="y")
         plt.gca().xaxis.set_minor_locator(mdates.MonthLocator(bymonth=[4, 7, 10]))
         plt.ylabel("Net Worth")
         plt.legend(prop={"size": 6})
