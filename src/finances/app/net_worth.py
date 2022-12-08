@@ -26,7 +26,7 @@ class NetWorth(_Template):
         self.data_files_path = data_files_path
         self.asset_dict = defaultdict(lambda: [0, 0])
         self.money_dict = {}
-        print("Welcome to your Net Worth Software. All prices are in CAD.")
+        print("Welcome to your Net Worth Software.")
 
     def find_net_worth(self):
         """Main method for calling all subcategories of net worth"""
