@@ -63,8 +63,8 @@ class NetWorth(_Template):
             amount = df.iloc[0][column]
             running_sum += amount
             print(f"{'Current':<10} {column:<10} {'holding=$':<9}{amount:<50}")
-            self.asset_dict[column][0] += amount
-            self.asset_dict[column][1] += amount
+            self.asset_dict[column][0] += amount  # of asset
+            self.asset_dict[column][1] += amount  # in fiat
         self._print_running_sum(file_name=file_name, running_sum=running_sum)
         return running_sum
 
@@ -74,17 +74,14 @@ class NetWorth(_Template):
         running_sum = 0
         for col in range(1, df.shape[1]):
             column = df.columns.to_list()[col]
-            ticker = self._get_price_yfinance(column=column)
             try:
-                price = ticker.info["regularMarketPrice"]
+                price = self._get_price_yfinance(column=column)
             except TimeoutError:
-                price = ticker.info["regularMarketPrice"]
+                price = self._get_price_yfinance(column=column)
+            except IndexError:
+                price = self._get_price_yfinance(column=column)
             except Exception as e:
-                err = ValueError(f"Failed to retrieve live price for {ticker}")
-                logger.error(err)
-                raise err from e
-            if not price:
-                logger.warning(f"Failed to find price for {column}.")
+                logger.warning(f"Failed to find price for {column}. {e}")
                 price = 0
             amount = df.iloc[0][column]
             value = round(amount * price, 2)
@@ -128,6 +125,9 @@ class NetWorth(_Template):
             df = pd.concat([df, df_new])
         for col in df.columns[1:]:
             df[col] = pd.to_numeric(df[col], errors="coerce")
+        if df["net_worth"].max() == df["net_worth"].iloc[-1]:
+            print("CONGRATS ON THE NEW ALL TIME HIGH!!!!")
+            print(":D :D :D :D :D :D :D :D :D")
         df.to_csv(str(self.historical_net_worths), index=False)
         logger.info("Saved net worth to history!")
         return df
@@ -144,7 +144,6 @@ class NetWorth(_Template):
         plt.title("Net Worth over time")
         plt.xlabel("Date")
         plt.xticks(rotation=30)
-        # plt.axhline(y=100000, color="y")
         plt.gca().xaxis.set_minor_locator(mdates.MonthLocator(bymonth=[4, 7, 10]))
         plt.ylabel("Net Worth")
         plt.legend(prop={"size": 6})
@@ -170,4 +169,4 @@ class NetWorth(_Template):
     @lru_cache(maxsize=128)
     def _get_price_yfinance(column: str):
         """Get price and cache the price"""
-        return yf.Ticker(column)
+        return yf.Ticker(column).fast_info["last_price"]
